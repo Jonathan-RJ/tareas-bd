@@ -95,7 +95,7 @@ INSERT INTO Notas (id_estudiante, id_curso, nota) VALUES
 
 SELECT * FROM estudiantes;
 SELECT * FROM departamentos;
-SELECT * FROM curos;
+SELECT * FROM cursos;
 SELECT * FROM inscripciones;
 SELECT * FROM notas;
 SELECT * FROM profesores;
@@ -105,9 +105,21 @@ SELECT *
 FROM estudiantes est
 INNER JOIN inscripciones ins ON est.id_estudiante = ins.id_estudiante
 INNER JOIN cursos cur ON ins.id_curso = cur.id_curso
+INNER JOIN notas n ON n.id_estudiante = est.id_estudiante
 INNER JOIN profesores prof ON cur.id_profesor = prof.id_profesor
 INNER JOIN departamentos dept ON cur.id_departamento = dept.id_departamento
 WHERE est.id_estudiante = 1
 ;
 
 
+SELECT 
+p.nombre_profesor,
+c.nombre_curso,
+n.nota
+
+FROM profesores p 
+INNER JOIN cursos c ON c.id_profesor = p.id_profesor
+INNER JOIN notas n ON n.id_curso = c.id_curso  j
+
+
+n 
