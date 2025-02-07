@@ -131,4 +131,12 @@ INNER JOIN departamentos dept ON cur.id_departamento = dept.id_departamento
 ;
 
 
+-- Transaction, Commit, 
+START TRANSACTION;
+DELETE FROM departamentos WHERE id_departamento = 4;
 
+SELECT * FROM departamentos;
+
+rollback;
+
+commit;
