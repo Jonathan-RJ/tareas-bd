@@ -1,0 +1,33 @@
+CREATE DATABASE tienda;
+
+USE tienda;
+
+CREATE TABLE cliente(
+id INT(11) AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(45) NOT NULL
+);
+
+CREATE TABLE producto(
+id INT(11) AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(45) NOT NULL,
+precio DECIMAL(6,2) NOT NULL,
+STOCK INT(11) NOT NULL
+);
+
+CREATE TABLE factura(
+numero INT(11) AUTO_INCREMENT PRIMARY KEY,
+fecha DATE  NOT NULL,
+cliente_id INT NOT NULL,
+FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE detalle_factura(
+num_detalle INT(11) AUTO_INCREMENT PRIMARY KEY,
+numero_factura INT NOT NULL,
+id_producto INT NOT NULL,
+cantidad INT(11) NOT NULL,
+FOREIGN KEY (numero_factura) REFERENCES factura(numero) ON DELETE CASCADE,
+FOREIGN KEY (id_producto) REFERENCES producto(id) ON DELETE CASCADE
+
+);

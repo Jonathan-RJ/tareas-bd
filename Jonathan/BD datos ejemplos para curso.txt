@@ -1,0 +1,147 @@
+Definición de la Base de Datos y Tablas (DDL)
+
+Cliente, Producto, Vendedor, Ventas y DetalleVenta
+
+
+-- Crear la base de datos
+CREATE DATABASE Tienda;
+USE Tienda;
+
+-- Tabla Cliente
+CREATE TABLE Cliente (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Correo VARCHAR(100) UNIQUE NOT NULL,
+    Telefono VARCHAR(15),
+    Direccion VARCHAR(255)
+);
+
+-- Tabla Producto
+CREATE TABLE Producto (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion TEXT,
+    Precio DECIMAL(10,2) NOT NULL,
+    Stock INT NOT NULL
+);
+
+-- Tabla Vendedor
+CREATE TABLE Vendedor (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Telefono VARCHAR(15),
+    Correo VARCHAR(100) UNIQUE NOT NULL
+);
+
+-- Tabla Ventas
+CREATE TABLE Ventas (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    ClienteID INT NOT NULL,
+    VendedorID INT NOT NULL,
+    FechaVenta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Total DECIMAL(10,2) NOT NULL DEFAULT 0,
+    FOREIGN KEY (ClienteID) REFERENCES Cliente(ID) ON DELETE CASCADE,
+    FOREIGN KEY (VendedorID) REFERENCES Vendedor(ID) ON DELETE CASCADE
+);
+
+-- Tabla DetalleVenta (Relación muchos a muchos entre Ventas y Productos)
+CREATE TABLE DetalleVenta (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    VentaID INT NOT NULL,
+    ProductoID INT NOT NULL,
+    Cantidad INT NOT NULL,
+    Subtotal DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (VentaID) REFERENCES Ventas(ID) ON DELETE CASCADE,
+    FOREIGN KEY (ProductoID) REFERENCES Producto(ID) ON DELETE CASCADE
+);
+
+
+
+
+
+
+
+
+-- Insertar Clientes
+INSERT INTO Cliente (Nombre, Correo, Telefono, Direccion) VALUES
+('Juan Pérez', 'juan@example.com', '123456789', 'Calle 1, Ciudad A'),
+('María López', 'maria@example.com', '987654321', 'Calle 2, Ciudad B');
+
+-- Insertar Productos
+INSERT INTO Producto (Nombre, Descripcion, Precio, Stock) VALUES
+('Laptop', 'Laptop de 15 pulgadas, 16GB RAM', 1200.00, 10),
+('Mouse', 'Mouse inalámbrico', 25.00, 50),
+('Teclado', 'Teclado mecánico', 80.00, 30);
+
+-- Insertar Vendedores
+INSERT INTO Vendedor (Nombre, Telefono, Correo) VALUES
+('Carlos Méndez', '111222333', 'carlos@example.com'),
+('Ana Torres', '444555666', 'ana@example.com');
+
+-- Insertar Ventas
+INSERT INTO Ventas (ClienteID, VendedorID, Total) VALUES
+(1, 1, 1250.00),
+(2, 2, 100.00);
+
+-- Insertar Detalles de Ventas
+INSERT INTO DetalleVenta (VentaID, ProductoID, Cantidad, Subtotal) VALUES
+(1, 1, 1, 1200.00),
+(1, 2, 2, 50.00),
+(2, 3, 1, 80.00);
+
+
+
+
+
+
+
+
+
+-- Obtener todas las ventas con el cliente y vendedor
+SELECT V.ID, C.Nombre AS Cliente, Vnd.Nombre AS Vendedor, V.FechaVenta, V.Total
+FROM Ventas V
+JOIN Cliente C ON V.ClienteID = C.ID
+JOIN Vendedor Vnd ON V.VendedorID = Vnd.ID;
+
+-- Listar los productos vendidos con cantidad y subtotal
+SELECT DV.VentaID, P.Nombre AS Producto, DV.Cantidad, DV.Subtotal
+FROM DetalleVenta DV
+JOIN Producto P ON DV.ProductoID = P.ID;
+
+-- Mostrar el stock actualizado de los productos
+SELECT Nombre, Stock FROM Producto;
+
+-- Obtener las ventas realizadas por un vendedor específico
+SELECT V.ID AS VentaID, C.Nombre AS Cliente, V.FechaVenta, V.Total
+FROM Ventas V
+JOIN Cliente C ON V.ClienteID = C.ID
+WHERE V.VendedorID = 1;
+
+-- Calcular el total de ventas por vendedor
+SELECT Vnd.Nombre AS Vendedor, SUM(V.Total) AS Total_Ventas
+FROM Ventas V
+JOIN Vendedor Vnd ON V.VendedorID = Vnd.ID
+GROUP BY Vnd.Nombre;
+
+
+
+
+
+
+
+
+
+
+
+-- Actualizar el precio de un producto
+UPDATE Producto SET Precio = 1300.00 WHERE Nombre = 'Laptop';
+
+-- Actualizar el stock de un producto después de una venta
+UPDATE Producto SET Stock = Stock - 1 WHERE ID = 1;
+
+-- Eliminar un cliente y sus ventas asociadas
+DELETE FROM Cliente WHERE ID = 2;
+
+
+
+
