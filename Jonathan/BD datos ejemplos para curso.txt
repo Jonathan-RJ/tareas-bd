@@ -25,6 +25,9 @@ CREATE TABLE Producto (
     Stock INT NOT NULL
 );
 
+
+
+
 -- Tabla Vendedor
 CREATE TABLE Vendedor (
     ID INT AUTO_INCREMENT PRIMARY KEY,
